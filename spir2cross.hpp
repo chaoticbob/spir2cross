@@ -122,6 +122,8 @@ namespace spir2cross
                 return join("_", id);
             }
 
+			// Gets the member count associated with an OpTypeStruct in id, e.g. the 
+			// fields of a uniform block.
 			uint32_t get_member_count(uint32_t id) const;
 
             // Given an OpTypeStruct in ID, obtain the identifier for member number "index".
