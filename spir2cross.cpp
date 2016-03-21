@@ -33,10 +33,17 @@ Instruction::Instruction(const vector<uint32_t> &spirv, uint32_t &index)
     offset = index + 1;
     length = count - 1;
 
-    index += count;
+	index += count;
 
-    if (index > spirv.size())
-        throw CompilerError("SPIR-V instruction goes out of bounds.");
+	if (spirv.size() == index) {
+		offset = UINT32_MAX;
+		index = UINT32_MAX;
+	}
+	else {
+		if (index > spirv.size()) {
+		   throw CompilerError("SPIR-V instruction goes out of bounds.");
+		}
+	}
 }
 
 Compiler::Compiler(vector<uint32_t> ir)
@@ -463,11 +470,19 @@ void Compiler::parse()
     meta.resize(bound);
 
     uint32_t offset = 5;
-    while (offset < len)
-        inst.emplace_back(spirv, offset);
+    bool hr = offset < len;
+    while (hr) {
+        Instruction i = Instruction( spirv, offset );
+		inst.push_back( i );
+		if(UINT32_MAX == offset) {
+            hr = false;
+			break;
+		}
+	}
 
-    for (auto &i : inst)
+    for (auto &i : inst) {
         parse(i);
+    }
 
     if (function)
         throw CompilerError("Function was not terminated.");
@@ -774,12 +789,13 @@ void Compiler::unset_decoration(uint32_t id, Decoration decoration)
 
 void Compiler::parse(const Instruction &i)
 {
-    auto ops = stream(i.offset);
+    auto ops = (UINT32_MAX == i.offset) ? nullptr : stream(i.offset);
     auto op = static_cast<Op>(i.op);
     uint32_t length = i.length;
 
-    if (i.offset + length > spirv.size())
+    if ((UINT32_MAX != i.offset) && (i.offset + length > spirv.size())) {
         throw CompilerError("Compiler::parse() opcode out of range.");
+	}
 
     switch (op)
     {

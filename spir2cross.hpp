@@ -225,7 +225,7 @@ namespace spir2cross
                     return nullptr;
             }
 
-            struct
+            struct execution
             {
                 uint64_t flags = 0;
                 spv::ExecutionModel model;
@@ -236,13 +236,15 @@ namespace spir2cross
                 } workgroup_size;
                 uint32_t invocations = 0;
                 uint32_t output_vertices = 0;
+				execution() {}
             } execution;
 
-            struct
+            struct source
             {
                 uint32_t version = 0;
                 bool es = false;
                 bool known = false;
+				source() {}
             } source;
 
             std::unordered_set<uint32_t> loop_block;
