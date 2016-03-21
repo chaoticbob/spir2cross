@@ -203,6 +203,12 @@ static void print_resources(const Compiler &compiler, const char *tag, const vec
         if (mask & (1ull << DecorationBinding))
             fprintf(stderr, " (Binding : %u)", compiler.get_decoration(res.id, DecorationBinding));
         fprintf(stderr, "\n");
+
+		if((! is_push_constant) && is_block) {
+			for(uint32_t index = 0; index < compiler.get_member_count(res.type_id); ++index) {
+				fprintf(stderr, "    %u: %s (%u)\n", index, compiler.get_member_name(res.type_id, index).c_str(), compiler.get_member_decoration(res.type_id, index, DecorationOffset));
+			}
+		}
     }
     fprintf(stderr, "=============\n\n");
 }

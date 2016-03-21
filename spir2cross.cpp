@@ -622,6 +622,12 @@ void Compiler::set_member_name(uint32_t id, uint32_t index, const std::string& n
     meta.at(id).members[index].alias = name;
 }
 
+uint32_t Compiler::get_member_count(uint32_t id) const
+{
+    auto &m = meta.at(id);
+	return static_cast<uint32_t>(m.members.size());
+}
+
 const std::string& Compiler::get_member_name(uint32_t id, uint32_t index) const
 {
     auto &m = meta.at(id);
